@@ -2,6 +2,7 @@ import { format } from "date-fns";
 import { LinearGradient } from "expo-linear-gradient";
 import {
   Box,
+  StatusBar,
   Center,
   Divider,
   extendTheme,
@@ -62,6 +63,8 @@ export default function App() {
 
   return (
     <NativeBaseProvider theme={theme}>
+      <StatusBar barStyle={"light-content"} backgroundColor={"#5bd6f7"} />
+
       <LinearGradient
         colors={["#5bd6f7", "#71b5fa", "#1069f4"]}
         start={{ x: 0.8, y: 0 }}
@@ -74,8 +77,8 @@ export default function App() {
           height: "100%",
         }}
       />
+
       <VStack
-        safeArea
         height={"full"}
         justifyContent={"center"}
         alignItems={"center"}
