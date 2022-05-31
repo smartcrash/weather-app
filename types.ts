@@ -6,6 +6,7 @@ export interface Weather {
   wind: Wind;
   clouds: Clouds;
   dt: number;
+  timezone: number;
   sys: Sys;
   id: number;
   name: string;

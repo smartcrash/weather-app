@@ -40,6 +40,8 @@ export default function App() {
     return <></>;
   }
 
+  const currentDate = new Date(Date.now() + data.timezone);
+
   const details = [
     {
       key: "Wind",
@@ -85,8 +87,8 @@ export default function App() {
           <Heading fontSize={"2xl"} fontWeight={"semibold"}>
             {data.name}
           </Heading>
-          <Text fontSize={"sm"} opacity={0.75}>
-            {format(new Date(), "eeee, d LLL")}
+          <Text fontSize={"sm"} opacity={0.8}>
+            {format(currentDate, "eeee, p")}
           </Text>
         </VStack>
 

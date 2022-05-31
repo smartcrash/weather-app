@@ -26,6 +26,9 @@ export default function useWeather(lat?: number, lon?: number): [Weather | null,
           .then(response => response.json())
           .finally(() => setLoading(false))
 
+        console.log(response);
+
+
         setData(response as Weather)
       }
     })()
