@@ -2,16 +2,17 @@ import { format } from "date-fns";
 import { LinearGradient } from "expo-linear-gradient";
 import {
   Box,
-  StatusBar,
   Center,
   Divider,
   extendTheme,
   Heading,
   HStack,
   NativeBaseProvider,
+  StatusBar,
   Text,
   VStack,
 } from "native-base";
+import Animated, { FadeInDown, FadeInRight } from "react-native-reanimated";
 import useLocation from "./hooks/useLocation";
 import useWeather from "./hooks/useWeather";
 
@@ -103,29 +104,37 @@ export default function App() {
               {WEATHER_ICONS[data.weather[0].description]}
             </Text>
             */}
-            <HStack>
-              <Heading
-                fontWeight={"normal"}
-                // fontSize={"9xl"}
-                fontSize={"150px"}
-                style={{
-                  textShadowColor: "white",
-                  textShadowOffset: { width: 0, height: 0 },
-                  textShadowRadius: 9,
-                }}
-              >
-                {data.main.temp.toFixed(0)}
-              </Heading>
-              <Text fontSize={"6xl"} marginTop={2} opacity={0.5}>
-                °
+            <Animated.View entering={FadeInDown.duration(800)}>
+              <HStack>
+                <Heading
+                  fontWeight={"normal"}
+                  // fontSize={"9xl"}
+                  fontSize={"150px"}
+                  style={{
+                    textShadowColor: "white",
+                    textShadowOffset: { width: 0, height: 0 },
+                    textShadowRadius: 9,
+                  }}
+                >
+                  {data.main.temp.toFixed(0)}
+                </Heading>
+                <Text fontSize={"6xl"} marginTop={2} opacity={0.5}>
+                  °
+                </Text>
+              </HStack>
+            </Animated.View>
+
+            <Animated.View entering={FadeInDown.duration(800).delay(100)}>
+              <Text fontSize={"3xl"} fontWeight={"normal"}>
+                {data.weather[0].main}
               </Text>
-            </HStack>
-            <Text fontSize={"3xl"} fontWeight={"normal"}>
-              {data.weather[0].main}
-            </Text>
-            <Text fontSize={"md"} opacity={0.5}>
-              {data.weather[0].description}
-            </Text>
+            </Animated.View>
+
+            <Animated.View entering={FadeInDown.duration(800).delay(200)}>
+              <Text fontSize={"md"} opacity={0.5}>
+                {data.weather[0].description}
+              </Text>
+            </Animated.View>
           </Center>
         </Box>
 
@@ -133,32 +142,36 @@ export default function App() {
 
         <HStack justifyContent={"space-between"} flexShrink={0} width={"full"}>
           {details.map(({ key, value, unit }, index) => (
-            <VStack
-              space={0.5}
-              justifyContent={"center"}
-              alignItems={"center"}
+            <Animated.View
+              entering={FadeInRight.duration(800).delay(100 * index)}
               key={index}
             >
-              <HStack alignItems={"flex-start"} space={0}>
-                <Text
-                  fontSize={"4xl"}
-                  fontWeight={"semibold"}
-                  style={{
-                    textShadowColor: "white",
-                    textShadowOffset: { width: 0, height: 0 },
-                    textShadowRadius: 5,
-                  }}
-                >
-                  {value}
+              <VStack
+                space={0.5}
+                justifyContent={"center"}
+                alignItems={"center"}
+              >
+                <HStack alignItems={"flex-start"} space={0}>
+                  <Text
+                    fontSize={"4xl"}
+                    fontWeight={"semibold"}
+                    style={{
+                      textShadowColor: "white",
+                      textShadowOffset: { width: 0, height: 0 },
+                      textShadowRadius: 5,
+                    }}
+                  >
+                    {value}
+                  </Text>
+                  <Text fontSize={"md"} fontWeight={"bold"} marginTop={2}>
+                    {unit}
+                  </Text>
+                </HStack>
+                <Text fontSize={"sm"} opacity={0.75}>
+                  {key}
                 </Text>
-                <Text fontSize={"md"} fontWeight={"bold"} marginTop={2}>
-                  {unit}
-                </Text>
-              </HStack>
-              <Text fontSize={"sm"} opacity={0.75}>
-                {key}
-              </Text>
-            </VStack>
+              </VStack>
+            </Animated.View>
           ))}
         </HStack>
       </VStack>
