@@ -2,11 +2,11 @@
 
 # Weather App
 
-A beautiful and simple weather app build with React Native and [OpenWeather](https://openweathermap.org/)
+A beautiful and simple weather app build with React Native, written in TypeScript and using [OpenWeather](https://openweathermap.org/) API
 
 ## 🚀 Demo
 
-[Live demo](https://smartcrash.github.io/virtual-keyboard/)
+[Live demo](https://expo.dev/@deigo/weather-app)
 
 ## 📦 Installation
 
