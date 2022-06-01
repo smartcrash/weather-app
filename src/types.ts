@@ -10,7 +10,7 @@ export interface Weather {
   sys: Sys;
   id: number;
   name: string;
-  cod: number;
+  cod: string;
 }
 
 export interface Coord {

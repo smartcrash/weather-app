@@ -57,7 +57,7 @@ export default function App() {
   }
 
   // TODO: Handle this error
-  if (data.cod === 404) {
+  if (data.cod === "404") {
     // City not found error
     return <></>;
   }
