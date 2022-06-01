@@ -15,6 +15,7 @@ import Animated, { FadeInDown, FadeInRight } from "react-native-reanimated";
 import Background from "./components/Background";
 import Container from "./components/Container";
 import SearchCityModal from "./components/SearchCityModal";
+import { toZonedTime } from "./helpers";
 import useLocation from "./hooks/useLocation";
 import useWeather from "./hooks/useWeather";
 
@@ -28,21 +29,6 @@ const WEATHER_ICONS: Record<string, string> = {
   thunderstorm: "⛈",
   snow: "🌨",
   mist: "🌫",
-};
-
-/**
- * Change the timezone of a given date
- * @param date
- * @param timezoneOffset Timezone offset in sesconds
- * @returns {Date}
- */
-const toZonedTime = (date: Date, timezoneOffset: number): Date => {
-  const dt = new Date(date.valueOf());
-
-  dt.setMinutes(dt.getMinutes() + dt.getTimezoneOffset());
-  dt.setSeconds(dt.getSeconds() + timezoneOffset);
-
-  return dt;
 };
 
 export default function App() {

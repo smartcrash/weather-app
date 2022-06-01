@@ -1,11 +1,7 @@
 import { useEffect, useState } from "react";
+import { API_KEY, API_URL } from "../constants";
+import { isEmpty, isUndefined } from "../helpers";
 import { Weather } from "../types";
-
-const API_KEY = "934ed876a8de43bf010a96d95a05b30c";
-const API_URL = `https://api.openweathermap.org/data/2.5/weather`;
-
-const isUndefined = (o: any): o is undefined => o === undefined
-const isEmpty = <T extends { length: number }>(o: T) => o.length === 0
 
 export default function useWeather(lat?: number, lon?: number, city?: string): [Weather | null, { loading: boolean }] {
   const [data, setData] = useState<Weather | null>(null)
