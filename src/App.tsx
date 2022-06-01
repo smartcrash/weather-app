@@ -6,6 +6,7 @@ import {
   Heading,
   HStack,
   Pressable,
+  Spinner,
   Text,
   useDisclose,
   useToast,
@@ -13,7 +14,6 @@ import {
 } from "native-base";
 import { useState } from "react";
 import Animated, { FadeInDown, FadeInRight } from "react-native-reanimated";
-import Background from "./components/Background";
 import Container from "./components/Container";
 import SearchCityModal from "./components/SearchCityModal";
 import { toZonedTime } from "./helpers";
@@ -25,7 +25,7 @@ export default function App() {
   const { isOpen, onOpen, onClose } = useDisclose();
   const [city, setCity] = useState("");
   const [location] = useLocation({ lat: 51.509865, lng: -0.118092 });
-  const [data] = useWeather({
+  const [data, { loading }] = useWeather({
     lat: location?.lat,
     lon: location?.lng,
     city,
@@ -38,7 +38,9 @@ export default function App() {
             paddingX={4}
             paddingY={2}
           >
-            <Text color={"black"}>{error.message}</Text>
+            <Text color={"black"} textTransform={"capitalize"}>
+              {error.message}
+            </Text>
           </Box>
         ),
       }),
@@ -74,12 +76,11 @@ export default function App() {
 
   return (
     <>
-      <Background colors={["#5bd6f7", "#71b5fa", "#1069f4"]} />
       <SearchCityModal isOpen={isOpen} onClose={onClose} onChange={setCity} />
 
       <Container>
         <VStack flex={1} justifyContent={"center"} alignItems={"center"}>
-          <VStack width={"full"} flexShrink={0}>
+          <VStack alignItems={"flex-start"} width={"full"} flexShrink={0}>
             <Pressable onPress={onOpen}>
               <Heading fontSize={"2xl"} fontWeight={"semibold"}>
                 {data.name}
@@ -88,6 +89,14 @@ export default function App() {
             <Text fontSize={"sm"} opacity={0.8}>
               {format(currentDate, "eeee, p")}
             </Text>
+
+            {loading && (
+              <Spinner
+                marginTop={2}
+                accessibilityLabel="Loading"
+                color={"white"}
+              />
+            )}
           </VStack>
 
           <Box flexGrow={1}>
@@ -96,7 +105,6 @@ export default function App() {
                 <HStack>
                   <Heading
                     fontWeight={"normal"}
-                    // fontSize={"9xl"}
                     fontSize={"150px"}
                     style={{
                       textShadowColor: "white",
@@ -119,7 +127,11 @@ export default function App() {
               </Animated.View>
 
               <Animated.View entering={FadeInDown.duration(800).delay(200)}>
-                <Text fontSize={"md"} opacity={0.5}>
+                <Text
+                  fontSize={"md"}
+                  opacity={0.5}
+                  textTransform={"capitalize"}
+                >
                   {description}
                 </Text>
               </Animated.View>

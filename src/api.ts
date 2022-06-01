@@ -2,7 +2,7 @@ import { isEmpty, isUndefined } from "./helpers";
 import { API_KEY, API_URL } from "./constants";
 import { Weather } from "./types";
 
-const createURL = (lat?: number, lon?: number, city?: string, units = 'methic'): string => {
+const createURL = (lat?: number, lon?: number, city?: string, units = 'metric'): string => {
   const url = new URL(API_URL)
 
   url.searchParams.append('units', units)
