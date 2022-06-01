@@ -8,6 +8,7 @@ import {
   Pressable,
   Text,
   useDisclose,
+  useToast,
   VStack,
 } from "native-base";
 import { useState } from "react";
@@ -19,23 +20,29 @@ import { toZonedTime } from "./helpers";
 import useLocation from "./hooks/useLocation";
 import useWeather from "./hooks/useWeather";
 
-const WEATHER_ICONS: Record<string, string> = {
-  "clear sky": "☀️",
-  "few clouds": "🌤",
-  "scattered clouds": "☁️",
-  "broken clouds": "🌤",
-  "shower rain": "🌧",
-  rain: "🌧",
-  thunderstorm: "⛈",
-  snow: "🌨",
-  mist: "🌫",
-};
-
 export default function App() {
+  const { show: showToast } = useToast();
   const { isOpen, onOpen, onClose } = useDisclose();
   const [city, setCity] = useState("");
   const [location] = useLocation({ lat: 51.509865, lng: -0.118092 });
-  const [data] = useWeather(location?.lat, location?.lng, city);
+  const [data] = useWeather({
+    lat: location?.lat,
+    lon: location?.lng,
+    city,
+    onError: (error) =>
+      showToast({
+        render: () => (
+          <Box
+            background={"white"}
+            borderRadius={"md"}
+            paddingX={4}
+            paddingY={2}
+          >
+            <Text color={"black"}>{error.message}</Text>
+          </Box>
+        ),
+      }),
+  });
 
   // TODO: Handle loading state
   if (!data) {
@@ -85,12 +92,6 @@ export default function App() {
 
           <Box flexGrow={1}>
             <Center marginY={"auto"}>
-              {/*
-            TODO: Change icons
-            <Text fontSize={"180px"}>
-              {WEATHER_ICONS[data.weather[0].description]}
-            </Text>
-            */}
               <Animated.View entering={FadeInDown.duration(800)}>
                 <HStack>
                   <Heading
