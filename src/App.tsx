@@ -48,12 +48,8 @@ const toZonedTime = (date: Date, timezoneOffset: number): Date => {
 export default function App() {
   const { isOpen, onOpen, onClose } = useDisclose();
   const [city, setCity] = useState("");
-  const [location] = useLocation();
-  const [data] = useWeather(
-    location?.coords.latitude,
-    location?.coords.longitude,
-    city
-  );
+  const [location] = useLocation({ lat: 51.509865, lng: -0.118092 });
+  const [data] = useWeather(location?.lat, location?.lng, city);
 
   // TODO: Handle loading state
   if (!data) {
