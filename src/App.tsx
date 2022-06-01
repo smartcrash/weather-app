@@ -42,12 +42,6 @@ export default function App() {
     return <></>;
   }
 
-  // TODO: Handle this error
-  if (data.cod === "404") {
-    // City not found error
-    return <></>;
-  }
-
   const { temp, humidity, feels_like: feelsLike } = data.main;
   const { main, description } = data.weather[0];
   const { speed: windSpeed } = data.wind;
