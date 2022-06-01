@@ -5,12 +5,16 @@ import {
   Divider,
   Heading,
   HStack,
+  Pressable,
   Text,
+  useDisclose,
   VStack,
 } from "native-base";
+import { useState } from "react";
 import Animated, { FadeInDown, FadeInRight } from "react-native-reanimated";
 import Background from "./components/Background";
 import Container from "./components/Container";
+import SearchCityModal from "./components/SearchCityModal";
 import useLocation from "./hooks/useLocation";
 import useWeather from "./hooks/useWeather";
 
@@ -26,11 +30,29 @@ const WEATHER_ICONS: Record<string, string> = {
   mist: "🌫",
 };
 
+/**
+ * Change the timezone of a given date
+ * @param date
+ * @param timezoneOffset Timezone offset in sesconds
+ * @returns {Date}
+ */
+const toZonedTime = (date: Date, timezoneOffset: number): Date => {
+  const dt = new Date(date.valueOf());
+
+  dt.setMinutes(dt.getMinutes() + dt.getTimezoneOffset());
+  dt.setSeconds(dt.getSeconds() + timezoneOffset);
+
+  return dt;
+};
+
 export default function App() {
+  const { isOpen, onOpen, onClose } = useDisclose();
+  const [city, setCity] = useState("");
   const [location] = useLocation();
   const [data] = useWeather(
     location?.coords.latitude,
-    location?.coords.longitude
+    location?.coords.longitude,
+    city
   );
 
   // TODO: Handle loading state
@@ -38,10 +60,17 @@ export default function App() {
     return <></>;
   }
 
+  // TODO: Handle this error
+  if (data.cod === 404) {
+    // City not found error
+    return <></>;
+  }
+
   const { temp, humidity, feels_like: feelsLike } = data.main;
   const { main, description } = data.weather[0];
   const { speed: windSpeed } = data.wind;
-  const currentDate = new Date(Date.now() + data.timezone);
+  const currentDate = toZonedTime(new Date(), data.timezone);
+
   const details = [
     {
       key: "Wind",
@@ -63,12 +92,16 @@ export default function App() {
   return (
     <>
       <Background colors={["#5bd6f7", "#71b5fa", "#1069f4"]} />
+      <SearchCityModal isOpen={isOpen} onClose={onClose} onChange={setCity} />
+
       <Container>
         <VStack flex={1} justifyContent={"center"} alignItems={"center"}>
           <VStack width={"full"} flexShrink={0}>
-            <Heading fontSize={"2xl"} fontWeight={"semibold"}>
-              {data.name}
-            </Heading>
+            <Pressable onPress={onOpen}>
+              <Heading fontSize={"2xl"} fontWeight={"semibold"}>
+                {data.name}
+              </Heading>
+            </Pressable>
             <Text fontSize={"sm"} opacity={0.8}>
               {format(currentDate, "eeee, p")}
             </Text>
