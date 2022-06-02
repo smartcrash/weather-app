@@ -8,6 +8,8 @@ A beautiful and simple weather app build with React Native, written in TypeScrip
 
 [Live demo](https://expo.dev/@deigo/weather-app)
 
+![screenshot](./expo-go.svg)
+
 ## 📦 Installation
 
 Clone the repo locally:
