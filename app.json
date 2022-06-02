@@ -2,6 +2,7 @@
   "expo": {
     "name": "weather-app",
     "slug": "weather-app",
+    "description": "Beautiful and simple Weather App",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
