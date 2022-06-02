@@ -1,8 +1,8 @@
-import { Box } from "native-base";
+import { Box, IBoxProps } from "native-base";
 
-export default function Container({ children }: { children: any }) {
+export default function Container({ children, ...props }: IBoxProps) {
   return (
-    <Box flex={1} paddingX={6} paddingTop={6} paddingBottom={8}>
+    <Box flex={1} paddingX={6} paddingTop={6} paddingBottom={8} {...props}>
       {children}
     </Box>
   );

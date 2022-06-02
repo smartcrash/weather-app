@@ -1,3 +1,4 @@
+import * as SplashScreen from "expo-splash-screen";
 import { format } from "date-fns";
 import {
   Box,
@@ -12,7 +13,7 @@ import {
   useToast,
   VStack,
 } from "native-base";
-import { useState } from "react";
+import { useState, useCallback } from "react";
 import Animated, { FadeInDown, FadeInRight } from "react-native-reanimated";
 import Container from "./components/Container";
 import SearchCityModal from "./components/SearchCityModal";
@@ -46,9 +47,14 @@ export default function App() {
       }),
   });
 
-  // TODO: Handle loading state
+  const onLayout = useCallback(async () => {
+    // This tells the splash screen to hide immediately!.
+    // We hide the splash screen once the initial data is fetched.
+    await SplashScreen.hideAsync();
+  }, []);
+
   if (!data) {
-    return <></>;
+    return null;
   }
 
   const { temp, humidity, feels_like: feelsLike } = data.main;
@@ -75,111 +81,101 @@ export default function App() {
   ];
 
   return (
-    <>
-      <SearchCityModal isOpen={isOpen} onClose={onClose} onChange={setCity} />
+    <Container onLayout={onLayout}>
+      <VStack flex={1} justifyContent={"center"} alignItems={"center"}>
+        <VStack alignItems={"flex-start"} width={"full"} flexShrink={0}>
+          <Pressable onPress={onOpen}>
+            <Heading fontSize={"2xl"} fontWeight={"semibold"}>
+              {data.name}
+            </Heading>
+          </Pressable>
+          <Text fontSize={"sm"} opacity={0.8}>
+            {format(currentDate, "eeee, p")}
+          </Text>
 
-      <Container>
-        <VStack flex={1} justifyContent={"center"} alignItems={"center"}>
-          <VStack alignItems={"flex-start"} width={"full"} flexShrink={0}>
-            <Pressable onPress={onOpen}>
-              <Heading fontSize={"2xl"} fontWeight={"semibold"}>
-                {data.name}
-              </Heading>
-            </Pressable>
-            <Text fontSize={"sm"} opacity={0.8}>
-              {format(currentDate, "eeee, p")}
-            </Text>
+          {loading && (
+            <Spinner
+              marginTop={2}
+              accessibilityLabel="Loading"
+              color={"white"}
+            />
+          )}
+        </VStack>
 
-            {loading && (
-              <Spinner
-                marginTop={2}
-                accessibilityLabel="Loading"
-                color={"white"}
-              />
-            )}
-          </VStack>
+        <Box flexGrow={1}>
+          <Center marginY={"auto"}>
+            <Animated.View entering={FadeInDown.duration(800)}>
+              <HStack>
+                <Heading
+                  fontWeight={"normal"}
+                  fontSize={"150px"}
+                  style={{
+                    textShadowColor: "white",
+                    textShadowOffset: { width: 0, height: 0 },
+                    textShadowRadius: 9,
+                  }}
+                >
+                  {temp.toFixed(0)}
+                </Heading>
+                <Text fontSize={"6xl"} marginTop={2} opacity={0.5}>
+                  °
+                </Text>
+              </HStack>
+            </Animated.View>
 
-          <Box flexGrow={1}>
-            <Center marginY={"auto"}>
-              <Animated.View entering={FadeInDown.duration(800)}>
-                <HStack>
-                  <Heading
-                    fontWeight={"normal"}
-                    fontSize={"150px"}
+            <Animated.View entering={FadeInDown.duration(800).delay(100)}>
+              <Text fontSize={"3xl"} fontWeight={"normal"}>
+                {main}
+              </Text>
+            </Animated.View>
+
+            <Animated.View entering={FadeInDown.duration(800).delay(200)}>
+              <Text fontSize={"md"} opacity={0.5} textTransform={"capitalize"}>
+                {description}
+              </Text>
+            </Animated.View>
+          </Center>
+        </Box>
+
+        <Divider background={"white"} marginY={4} opacity={0.2} />
+
+        <HStack justifyContent={"space-between"} flexShrink={0} width={"full"}>
+          {details.map(({ key, value, unit }, index) => (
+            <Animated.View
+              entering={FadeInRight.duration(800).delay(100 * index)}
+              key={index}
+            >
+              <VStack
+                space={0.5}
+                justifyContent={"center"}
+                alignItems={"center"}
+              >
+                <HStack alignItems={"flex-start"} space={0}>
+                  <Text
+                    fontSize={"4xl"}
+                    fontWeight={"semibold"}
                     style={{
                       textShadowColor: "white",
                       textShadowOffset: { width: 0, height: 0 },
-                      textShadowRadius: 9,
+                      textShadowRadius: 5,
                     }}
                   >
-                    {temp.toFixed(0)}
-                  </Heading>
-                  <Text fontSize={"6xl"} marginTop={2} opacity={0.5}>
-                    °
+                    {value}
+                  </Text>
+                  <Text fontSize={"md"} fontWeight={"bold"} marginTop={2}>
+                    {unit}
                   </Text>
                 </HStack>
-              </Animated.View>
-
-              <Animated.View entering={FadeInDown.duration(800).delay(100)}>
-                <Text fontSize={"3xl"} fontWeight={"normal"}>
-                  {main}
+                <Text fontSize={"sm"} opacity={0.75}>
+                  {key}
                 </Text>
-              </Animated.View>
+              </VStack>
+            </Animated.View>
+          ))}
+        </HStack>
+      </VStack>
 
-              <Animated.View entering={FadeInDown.duration(800).delay(200)}>
-                <Text
-                  fontSize={"md"}
-                  opacity={0.5}
-                  textTransform={"capitalize"}
-                >
-                  {description}
-                </Text>
-              </Animated.View>
-            </Center>
-          </Box>
-
-          <Divider background={"white"} marginY={4} opacity={0.2} />
-
-          <HStack
-            justifyContent={"space-between"}
-            flexShrink={0}
-            width={"full"}
-          >
-            {details.map(({ key, value, unit }, index) => (
-              <Animated.View
-                entering={FadeInRight.duration(800).delay(100 * index)}
-                key={index}
-              >
-                <VStack
-                  space={0.5}
-                  justifyContent={"center"}
-                  alignItems={"center"}
-                >
-                  <HStack alignItems={"flex-start"} space={0}>
-                    <Text
-                      fontSize={"4xl"}
-                      fontWeight={"semibold"}
-                      style={{
-                        textShadowColor: "white",
-                        textShadowOffset: { width: 0, height: 0 },
-                        textShadowRadius: 5,
-                      }}
-                    >
-                      {value}
-                    </Text>
-                    <Text fontSize={"md"} fontWeight={"bold"} marginTop={2}>
-                      {unit}
-                    </Text>
-                  </HStack>
-                  <Text fontSize={"sm"} opacity={0.75}>
-                    {key}
-                  </Text>
-                </VStack>
-              </Animated.View>
-            ))}
-          </HStack>
-        </VStack>
-      </Container>
-    </>
+      <SearchCityModal isOpen={isOpen} onClose={onClose} onChange={setCity} />
+    </Container>
   );
 }
